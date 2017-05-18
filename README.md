@@ -172,3 +172,29 @@ Promise.try(database.users.get({id: userId}))
   .catch(...)
 
 ```
+
+### async函数
+
+Generator 函数的语法糖
+1.内置执行器Generator 函数的执行必须靠执行器，所以才有了co模块，而async函数自带执行器。也就是说，async函数的执行，与普通函数一模一样，只要一行。
+2.更好的语义 async和await，比起星号和yield，语义更清楚了。async表示函数里有异步操作，await表示紧跟在后面的表达式需要等待结果。
+3.更广的适用性 co模块约定，yield命令后面只能是 Thunk 函数或 Promise 对象，而async函数的await命令后面，可以是Promise 对象和原始类型的值（数值、字符串和布尔值，但这时等同于同步操作）
+4.返回值是 Promise,Generator 函数的返回值是 Iterator 对象
+
+```js
+
+async function getStockPriceByName(name) {
+  var symbol = await getStockSymbol(name);
+  var stockPrice = await getStockPrice(symbol);
+  return stockPrice;
+}
+
+getStockPriceByName('goog').then(function (result) {
+  console.log(result);
+});
+
+```
+
+>前面已经说过，await命令后面的Promise对象，运行结果可能是rejected，所以最好把await命令放在try...catch代码块中。
+>let [foo, bar] = await Promise.all([getFoo(), getBar()])
+>await命令只能用在async函数之中，如果用在普通函数，就会报错
